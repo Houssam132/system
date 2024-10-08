@@ -1,19 +1,42 @@
 import socket
 import threading
+import os
 # Define server host and port
 HOST = '127.0.0.1'  # Localhost
 PORT = 8080         # Port to listen on
 
-#making the server has the ability to handle multi connections
+#files transfer by the server
 def handle_client(conn, addr):
     print(f"New connection: {addr}")
+    
     while True:
-        data = conn.recv(1024)
-        if not data:
+        # receiving the name of the file 
+        file_request = conn.recv(1024).decode()
+        if not file_request:
             break  # If no data is received, close the connection
-        print(f"Message from {addr}: {data.decode()}")
+
+        print(f"Client {addr} requested the file: {file_request}")
+        
+        print("Files in current directory:", os.listdir())
+        # verify if the file exists
+        if os.path.exists(file_request):
+            # sending the confirmation
+            conn.send("File found".encode())
+
+            # open the file and sending it into chunks
+            with open(file_request, 'rb') as file:
+                chunk = file.read(1024)
+                while chunk:
+                    conn.send(chunk)
+                    chunk = file.read(1024)
+            print(f"File {file_request} sent successfully to {addr}")
+        else:
+            # inform the client that the file does not exist
+            conn.send("File not found".encode())
+    
     conn.close()
     print(f"Connection with {addr} closed")
+
 # Create a TCP/IP socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
