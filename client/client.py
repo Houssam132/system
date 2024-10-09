@@ -26,7 +26,9 @@ if response == "File found":
             if not chunk:
                 break
             file.write(chunk)
-        print(f"File {file_request} downloaded successfully!")
+            print(f"Received chunk: {len(chunk)} bytes")    
+    file.close()
+    print(f"File {file_request} downloaded successfully!")
 else:
     print("File not found on the server.")
 

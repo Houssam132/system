@@ -28,6 +28,7 @@ def handle_client(conn, addr):
                 chunk = file.read(1024)
                 while chunk:
                     conn.send(chunk)
+                    print(f"Sent chunk: {len(chunk)} bytes")
                     chunk = file.read(1024)
             print(f"File {file_request} sent successfully to {addr}")
         else:
@@ -55,4 +56,4 @@ while True:
     # Create a new thread for each client
     thread = threading.Thread(target=handle_client, args=(conn, addr))
     thread.start()
-    print(f"Active connections: {threading.active_Count() - 1}")
+    print(f"Active connections: {threading.active_count() - 1}")
