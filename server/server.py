@@ -10,11 +10,13 @@ def handle_client(conn, addr):
     print(f"New connection: {addr}")
     
     while True:
+        
         # receiving the name of the file 
         file_request = conn.recv(1024).decode()
+
         if not file_request:
             break  # If no data is received, close the connection
-
+        
         print(f"Client {addr} requested the file: {file_request}")
         
         print("Files in current directory:", os.listdir())
